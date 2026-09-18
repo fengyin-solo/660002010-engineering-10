@@ -11,12 +11,18 @@
           停止
         </button>
       </div>
+      <button @click="resetSample" :disabled="store.resetting"
+        class="bg-orange-700 py-1.5 rounded text-xs hover:bg-orange-600 disabled:opacity-50">
+        {{ store.resetting ? '恢复中...' : '↺ 恢复示例数据' }}
+      </button>
+      <div v-if="store.loadError" class="text-xs text-red-400 bg-red-900/40 rounded p-2">{{ store.loadError }}</div>
       <div>
         <label class="text-gray-400 text-xs">轮询间隔: {{ store.pollInterval }}ms</label>
         <input type="range" v-model.number="store.pollInterval" min="200" max="5000" step="100" class="w-full" />
       </div>
 
       <h3 class="text-gray-400 text-xs mt-2">设备列表</h3>
+      <div v-if="store.loading" class="text-xs text-gray-500">加载设备数据...</div>
       <div v-for="d in store.devices" :key="d.id" @click="store.selectedDevice = d"
         class="bg-gray-800 rounded p-2 cursor-pointer text-sm"
         :class="store.selectedDevice?.id === d.id ? 'ring-1 ring-orange-500' : ''">
@@ -43,14 +49,16 @@
     <div class="flex-1 flex flex-col gap-3 p-4 overflow-y-auto">
       <!-- Register Gauges -->
       <div class="grid grid-cols-4 gap-3">
-        <div v-for="d in store.devices" :key="d.id" v-for="r in d.registers" :k="r.address"
-          class="bg-gray-900 rounded-xl p-3">
-          <div class="text-xs text-gray-400">{{ d.name }}</div>
-          <div class="text-2xl font-bold" :class="d.online ? 'text-orange-400' : 'text-gray-600'">
-            {{ typeof r.value === 'number' ? r.value.toFixed(r.value > 100 ? 0 : 1) : r.value ? 'ON' : 'OFF' }}
+        <template v-for="d in store.devices" :key="d.id">
+          <div v-for="r in d.registers" :key="`${d.id}-${r.address}`"
+            class="bg-gray-900 rounded-xl p-3">
+            <div class="text-xs text-gray-400">{{ d.name }}</div>
+            <div class="text-2xl font-bold" :class="d.online ? 'text-orange-400' : 'text-gray-600'">
+              {{ typeof r.value === 'number' ? r.value.toFixed(r.value > 100 ? 0 : 1) : r.value ? 'ON' : 'OFF' }}
+            </div>
+            <div class="text-xs text-gray-500">{{ r.name }} {{ r.unit }}</div>
           </div>
-          <div class="text-xs text-gray-500">{{ r.name }} {{ r.unit }}</div>
-        </div>
+        </template>
       </div>
 
       <!-- Chart -->
@@ -96,6 +104,15 @@ function stopPoll() {
   if (timer) { clearInterval(timer); timer = null }
 }
 
-onMounted(() => store.initMockDevices())
+async function resetSample() {
+  const wasPolling = store.isPolling
+  stopPoll() // 恢复时停止采集，避免模拟噪声立刻污染恢复出来的初始值
+  await store.resetData()
+  if (wasPolling) startPoll()
+}
+
+onMounted(() => {
+  store.loadDevices().catch(() => { /* 错误信息已显示在侧栏 */ })
+})
 onUnmounted(() => stopPoll())
 </script>

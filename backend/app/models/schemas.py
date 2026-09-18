@@ -1,12 +1,14 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Union
+
 
 class ModbusRegister(BaseModel):
     address: int
     name: str
     type: str
-    value: float
+    value: Union[float, bool]
     unit: str
+
 
 class Device(BaseModel):
     id: str

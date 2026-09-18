@@ -1,0 +1,52 @@
+[
+  {
+    "id": "dev1",
+    "name": "温湿度传感器-A区",
+    "ip": "192.168.1.101",
+    "port": 502,
+    "slave_id": 1,
+    "online": true,
+    "registers": [
+      { "address": 0, "name": "温度", "type": "holding", "value": 25.6, "unit": "°C" },
+      { "address": 1, "name": "湿度", "type": "holding", "value": 62.3, "unit": "%RH" },
+      { "address": 2, "name": "露点", "type": "holding", "value": 17.8, "unit": "°C" }
+    ]
+  },
+  {
+    "id": "dev2",
+    "name": "压力变送器-B区",
+    "ip": "192.168.1.102",
+    "port": 502,
+    "slave_id": 2,
+    "online": true,
+    "registers": [
+      { "address": 0, "name": "管道压力", "type": "holding", "value": 3.45, "unit": "MPa" },
+      { "address": 1, "name": "差压", "type": "holding", "value": 0.12, "unit": "kPa" }
+    ]
+  },
+  {
+    "id": "dev3",
+    "name": "电机控制器-C区",
+    "ip": "192.168.1.103",
+    "port": 502,
+    "slave_id": 3,
+    "online": false,
+    "registers": [
+      { "address": 0, "name": "转速", "type": "holding", "value": 1480, "unit": "RPM" },
+      { "address": 1, "name": "电流", "type": "holding", "value": 12.5, "unit": "A" },
+      { "address": 2, "name": "运行状态", "type": "coil", "value": true, "unit": "" }
+    ]
+  },
+  {
+    "id": "dev4",
+    "name": "流量计-D区",
+    "ip": "192.168.1.104",
+    "port": 502,
+    "slave_id": 4,
+    "online": true,
+    "registers": [
+      { "address": 0, "name": "瞬时流量", "type": "holding", "value": 156.7, "unit": "L/min" },
+      { "address": 1, "name": "累计流量", "type": "holding", "value": 98234, "unit": "L" }
+    ]
+  }
+]
