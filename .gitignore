@@ -234,3 +234,9 @@ sandbox/
 *.pid
 *.seed
 *.pid.lock
+
+# =========================
+# 本项目编排脚本运行期文件
+# =========================
+.run/
+backend/data/state.json
